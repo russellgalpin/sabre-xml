@@ -111,9 +111,14 @@ class Writer extends XMLWriter {
 
                 if (is_int($name)) {
 
-                    // This item has a numeric index. We expect to be an array with a name and a value.
-                    if (!is_array($item) || !array_key_exists('name', $item) || !array_key_exists('value', $item)) {
-                        throw new InvalidArgumentException('When passing an array to ->write with numeric indices, every item must be an array containing the "name" and "value" key');
+                    if( $item instanceof XmlSerializable) {
+                        $item->xmlSerialize($this);
+                        continue;
+                    } else {
+                        // This item has a numeric index. We expect to be an array with a name and a value.
+                        if (!is_array($item) || !array_key_exists('name', $item) || !array_key_exists('value', $item)) {
+                            throw new InvalidArgumentException('When passing an array to ->write with numeric indices, every item must be an array containing the "name" and "value" key');
+                        }
                     }
 
                     $attributes = isset($item['attributes']) ? $item['attributes'] : [];
